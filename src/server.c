@@ -105,7 +105,6 @@ int main(int argc, char *argv[]){
 	file_logging();
 
 	//Populates global variable for config options
-	//FILE *fp = fopen("/Users/tommyphiravanh/Desktop/git/INET4021-master/lab1/conf/httpd.conf", "r");
 	FILE *fp = fopen("../conf/httpd.conf", "r");
 	if(fp == NULL){
 		perror("Configuration file could not be opened");
