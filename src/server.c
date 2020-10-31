@@ -1,8 +1,3 @@
-/*
-INET4021 Group:
-Tommy Phiravanh: phira004
-Abdul Ibrahim: ibrah171
-*/
 #include "server.h"
 
 int maxConnectionAllowed,portNumber;
