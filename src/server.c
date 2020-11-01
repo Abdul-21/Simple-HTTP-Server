@@ -7,21 +7,20 @@ pthread_t thread[32];
 pthread_mutex_t currentConn_lock;
 char httpHeader[8000]=
 	"HTTP/1.0 200 OK\r\n"
-	"Content-Type: text/html\r\n";
+	"Content-Type: text/html\r\n\r\n";
 
 void *threadFunction(void * arg) {
   char buf[BUFSIZE];
 	struct threadArg *tArg = (struct threadArg *) malloc(sizeof(struct threadArg));
   tArg = arg;
   //Checks that something was received
-  //This does nothing atm.
   ssize_t status;
   status = recv(tArg->clientfd, &buf, sizeof(buf), 0);
   if (status < 0){
     perror("Nothing received");
   }
 	//printf("%s\n",buf);
-	//printf("%s\n",httpHeader);
+	printf("%s\n",httpHeader);
   //Sends the index page
   send(tArg->clientfd,httpHeader,strlen(httpHeader),0);
 	close(tArg->clientfd);
@@ -102,7 +101,7 @@ int main(int argc, char *argv[]){
 
 	//Allows for errors and messages produced by stdout/stderr to be written to the log files
 	printf("If this is not listening for a connection, Please check your error logs\n");
-	file_logging();
+	// file_logging();
 
 	//Populates global variable for config options
 	FILE *fp = fopen("../conf/httpd.conf", "r");
@@ -127,8 +126,7 @@ int main(int argc, char *argv[]){
   if(s < 0){
     perror("Socket could not be created");
 		return 1;
-  }
-  else{
+  }else{
     setsockopt(s, SOL_SOCKET, SO_REUSEADDR, &optval, sizeof(int));
     fprintf(stdout, "Socket setup and opened with return code: \"%d\"\n",s);
   }
