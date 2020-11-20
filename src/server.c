@@ -19,7 +19,6 @@ void *threadFunction(void * arg) {
   if (status < 0){
     perror("Nothing received");
   }
-	//printf("%s\n",buf);
 	printf("%s\n",httpHeader);
   //Sends the index page
   send(tArg->clientfd,httpHeader,strlen(httpHeader),0);
