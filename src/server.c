@@ -19,11 +19,46 @@ void *threadFunction(void * arg) {
   if (status < 0){
     perror("Nothing received");
   }
-	printf("%s\n",httpHeader);
-  //Sends the index page
-  send(tArg->clientfd,httpHeader,strlen(httpHeader),0);
+	// printf("%s\n",httpHeader);
+	char *request[3];
+	char *token = strtok(buf,"\n");
+	char delim[] = " ";
+	char *res = strtok(token,delim);
+	int i = 0;
+	while(res != NULL){
+		res = strtok(NULL,delim);
+		request[i++] = res;
+	}
+	if(strcmp(request[0], "/")==0){ //default GET Method for get index page of the website
+		send(tArg->clientfd,httpHeader,strlen(httpHeader),0);
+  }else{
+		char fileName[128];
+		getcwd(fileName, sizeof(fileName));
+		strcat(fileName,request[0]);
+		// printf("%s\n",filename);
+		FILE *reqData = fopen(fileName, "r");
+		if(reqData == NULL){
+			perror("File was not opened");
+			free(tArg);
+			return NULL;
+		}
+		char imgData [8196];
+		int size;
+		char httpImgHeader[8000]=
+			"HTTP/1.0 200 OK\r\n"
+			"Content-Type: image\r\n\r\n";
+		fseek(reqData, 0, SEEK_END);
+    size = ftell(reqData);
+	  fseek(reqData, 0, SEEK_SET);
+	  printf("Total Picture size: %i\n",size);
+		send(tArg->clientfd,httpImgHeader,strlen(httpImgHeader),0);
+		while(!feof(reqData)) {
+			int read_size = fread(imgData, 1, sizeof(imgData)-1, reqData);
+			write(tArg->clientfd, imgData, read_size);
+		}
+  }
 	close(tArg->clientfd);
-	//free(tArg);
+	free(tArg); //freeing struct
   pthread_mutex_lock(&currentConn_lock);
   currentConn--;
   pthread_mutex_unlock(&currentConn_lock);
