@@ -1,18 +1,72 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
-  <head>
-    <title>This is the title of the webpage!</title>
-    <style>
-    body {
-      background-image: url('biking.jpg');
-      background-repeat: no-repeat;
-      background-attachment: fixed;
-      background-size: 100% 100%;
-    }
-  </style>
-  </head>
-  <body>
-    <h1> This is a Test Page </h1>
-    <p>This is an example paragraph. Anything in the <strong>body</strong> tag will appear on the page, just like this <strong>p</strong> tag and its contents.</p>
-  </body>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Abdul's Website</title>
+    <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Alef">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Crimson+Pro">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat:400,600,700">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Playfair+Display">
+    <link rel="stylesheet" href="assets/fonts/font-awesome.min.css">
+    <link rel="stylesheet" href="assets/fonts/ionicons.min.css">
+    <link rel="stylesheet" href="assets/css/Footer-Basic.css">
+    <link rel="stylesheet" href="https://unpkg.com/@bootstrapstudio/bootstrap-better-nav/dist/bootstrap-better-nav.min.css">
+    <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+
+<body>
+    <section id="centerHome">
+        <div>
+            <nav class="navbar navbar-light navbar-expand-md" id="navbar">
+                <div class="container-fluid"><a class="navbar-brand" href="#" style="font-family: Montserrat, sans-serif;padding-top: 16px;">Abdul Ibrahim</a><button data-toggle="collapse" class="navbar-toggler" data-target="#navcol-1"><span class="sr-only">Toggle navigation</span><span class="navbar-toggler-icon"></span></button>
+                    <div
+                        class="collapse navbar-collapse" id="navcol-1" style="font-family: Montserrat, sans-serif;font-size: 13px;padding-left: 26px;padding-top: 16px;">
+                        <ul class="nav navbar-nav" style="color: rgb(255,255,255);">
+                            <li class="nav-item"><a class="nav-link active" href="#">Resume</a></li>
+                            <li class="nav-item"><a class="nav-link" href="#" style="color: rgb(34,34,34);">Projects</a></li>
+                            <li class="nav-item"><a class="nav-link" href="#" style="color: #222;">Contact Me</a></li>
+                        </ul>
+                </div>
+        </div>
+        </nav>
+        <h1 id="CenterHeading" style="font-family: Montserrat, sans-serif;color: rgb(255,255,255);">Abdul Ibrahim</h1>
+        <p id="maintext"><br>A Junior at the University of Minnesota with an interest in further <br>developing my programming abilities and learning new techniques<br><br></p>
+        </div>
+        <div id="homeBottom"><button class="btn btn-primary" onclick="smoothScroll(document.getElementById('#aboutme'))" id="down-btn" type="button"><img src="assets/img/Down-Arrow-White.png" style="width: 30px;" /></button></div>
+    </section>
+    <section id="aboutme" style="height: 75vh;">
+        <div class="container" id="About-Me">
+            <h1>About Me</h1>
+            <p id="introduction"><br> I am a gamer, computer hobbyist, and currently pursing a B.A.S in Information Technology Infrastructure with a minor in Computer Science at the University of Minnesota. I currently work as a Computer &amp; Device Support Technician at
+                the UMN IT.<br><br></p>
+            <h1>Skills</h1>
+            <ul id="items">
+                <li>Highly skilled in Java, and C.<br></li>
+                <li>Proficient in Python, AWS, SQL, HTML<br></li>
+                <li>Familiarity with Arduino, CSS, HTML, Javascript, Bash, Perl, and x86 Assembly.<br></li>
+            </ul>
+        </div>
+    </section>
+    <div class="footer-basic" style="height: auto;">
+        <footer>
+            <div class="social"><a href="https://github.com/Abdul-21"><i class="icon ion-social-github"></i></a><a href="https://www.linkedin.com/in/abdul-kadir-i-4a9aaa143/"><i class="icon ion-social-linkedin"></i></a><a href="mailto:ibrah171@umn.edu"><i class="fa fa-envelope-o"></i></a></div>
+            <ul
+                class="list-inline" style="font-family: Montserrat, sans-serif;color: rgb(33,37,41);">
+                <li class="list-inline-item"><a href="#">Home</a></li>
+                <li class="list-inline-item"><a href="#">Resume</a></li>
+                <li class="list-inline-item"><a href="#">Projects</a></li>
+                </ul>
+                <p class="madeby" style="font-family: 'Playfair Display', serif;">Made by Abdul</p>
+        </footer>
+    </div>
+    <script src="assets/js/jquery.min.js"></script>
+    <script src="assets/bootstrap/js/bootstrap.min.js"></script>
+    <script src="https://unpkg.com/@bootstrapstudio/bootstrap-better-nav/dist/bootstrap-better-nav.min.js"></script>
+    <script src="assets/js/navbar.js"></script>
+    <script src="assets/js/smoothbutton.js"></script>
+</body>
+
 </html>

@@ -5,6 +5,7 @@ char rootDir[LINES],indexName[LINES];
 int threadCount = 0,currentConn = 0;
 pthread_t thread[32];
 pthread_mutex_t currentConn_lock;
+pthread_mutex_t reading_lock;
 char httpHeader[8000]=
 	"HTTP/1.0 200 OK\r\n"
 	"Content-Type: text/html\r\n\r\n";
@@ -19,23 +20,33 @@ void *threadFunction(void * arg) {
   if (status < 0){
     perror("Nothing received");
   }
-	// printf("%s\n",httpHeader);
-	char *request[3];
-	char *token = strtok(buf,"\n");
-	char delim[] = " ";
-	char *res = strtok(token,delim);
+	// printf("%s\n",buf);
+	char *request[8000];
+	char *token;
+	char *res = buf;
+	char *delim = " ";
 	int i = 0;
-	while(res != NULL){
-		res = strtok(NULL,delim);
-		request[i++] = res;
+	// while(res != NULL){
+	// 	res = strtok(NULL,delim);
+	// 	request[i++] = res;
+	// }
+	while ((token = strtok_r(res,delim, &res))){
+		// printf("%s\n",token);
+		request[i++] = token;
 	}
-	if(strcmp(request[0], "/")==0){ //default GET Method for get index page of the website
+	pthread_mutex_lock(&reading_lock);
+	// char *file = request[1];
+	const char ch = ".";
+	char *dot = strrchr(request[1],ch);
+	printf("This is the extension: %s\n",dot);
+	printf("Request %s",request[1]);
+	if(strcmp(request[1], "/")==0){ //default GET Method for get index page of the website
 		send(tArg->clientfd,httpHeader,strlen(httpHeader),0);
-  }else{
+  } else{
 		char fileName[128];
 		getcwd(fileName, sizeof(fileName));
-		strcat(fileName,request[0]);
-		// printf("%s\n",filename);
+		strcat(fileName,request[1]);
+		printf("%s\n",fileName);
 		FILE *reqData = fopen(fileName, "r");
 		if(reqData == NULL){
 			perror("File was not opened");
@@ -57,6 +68,7 @@ void *threadFunction(void * arg) {
 			write(tArg->clientfd, imgData, read_size);
 		}
   }
+	pthread_mutex_unlock(&reading_lock);
 	close(tArg->clientfd);
 	free(tArg); //freeing struct
   pthread_mutex_lock(&currentConn_lock);
