@@ -21,7 +21,7 @@ void *threadFunction(void * arg) {
     perror("Nothing received");
   }
 	// printf("%s\n",buf);
-	char *request[8000];
+	char *request[512];
 	char *token;
 	char *res = buf;
 	char *delim = " ";
@@ -35,14 +35,22 @@ void *threadFunction(void * arg) {
 		request[i++] = token;
 	}
 	pthread_mutex_lock(&reading_lock);
-	// char *file = request[1];
-	const char ch = ".";
-	char *dot = strrchr(request[1],ch);
-	printf("This is the extension: %s\n",dot);
-	printf("Request %s",request[1]);
+	char *FilePath = request[1];
+	delim = "/";
+	char *tk;
+	char *requested_file;
+	while((tk = strtok_r(FilePath, delim, &FilePath))){
+		requested_file = tk;
+	}
 	if(strcmp(request[1], "/")==0){ //default GET Method for get index page of the website
 		send(tArg->clientfd,httpHeader,strlen(httpHeader),0);
-  } else{
+  }else{
+		char *filetype;
+		delim = ".";
+		while((tk = strtok_r(requested_file, delim, &requested_file))){
+			filetype = tk;
+		}
+		printf("The file type is %s\n", filetype);
 		char fileName[128];
 		getcwd(fileName, sizeof(fileName));
 		strcat(fileName,request[1]);
@@ -103,28 +111,28 @@ void populateFromConfig(FILE *configFp){
 }
 
 //Function to log errors and access
-void file_logging(){
-  int alog = open("../logs/access.log", O_RDWR|O_CREAT|O_APPEND, 0600);
-  if (alog == -1){
-    perror("Error when opening access log file");
-    exit(0);
-  }
-  int stdout_fd= dup(fileno(stdout));
-  if (dup2(alog, fileno(stdout)) == -1){
-      perror("Stdout could not be redirected to log file");
-      exit(0);
-  }
-  int elog = open("../logs/error.log", O_RDWR|O_CREAT|O_APPEND, 0600);
-  if (elog == -1) {
-    perror("Error when opening error log file");
-    exit(0);
-  }
-  int stderr_fd= dup(fileno(stderr));
-  if (dup2(elog, fileno(stderr)) == -1){
-    perror("Stderr could not be redirected to log file");
-    exit(0);
-	}
-}
+// void file_logging(){
+//   int alog = open("../logs/access.log", O_RDWR|O_CREAT|O_APPEND, 0600);
+//   if (alog == -1){
+//     perror("Error when opening access log file");
+//     exit(0);
+//   }
+//   int stdout_fd= dup(fileno(stdout));
+//   if (dup2(alog, fileno(stdout)) == -1){
+//       perror("Stdout could not be redirected to log file");
+//       exit(0);
+//   }
+//   int elog = open("../logs/error.log", O_RDWR|O_CREAT|O_APPEND, 0600);
+//   if (elog == -1) {
+//     perror("Error when opening error log file");
+//     exit(0);
+//   }
+//   int stderr_fd= dup(fileno(stderr));
+//   if (dup2(elog, fileno(stderr)) == -1){
+//     perror("Stderr could not be redirected to log file");
+//     exit(0);
+// 	}
+// }
 
 //Function to get the full directory of a graphic or html file
 char *getFullDirectory(char fileName[], int isInImageFolder){
