@@ -20,25 +20,26 @@ void *threadFunction(void * arg) {
   if (status < 0){
     perror("Nothing received");
   }
-	// printf("%s\n",buf);
-	char *request[512];
+	//printf("%s\n",buf);
+	char *request[8000];
 	char *token;
 	char *res = buf;
 	char *delim = " ";
 	int i = 0;
-	// while(res != NULL){
-	// 	res = strtok(NULL,delim);
-	// 	request[i++] = res;
-	// }
+
 	while ((token = strtok_r(res,delim, &res))){
 		// printf("%s\n",token);
 		request[i++] = token;
 	}
 	pthread_mutex_lock(&reading_lock);
 	char *FilePath = request[1];
+	char finalpath[128];
+	memcpy(finalpath,request[1],strlen(request[1])+1);
 	delim = "/";
 	char *tk;
 	char *requested_file;
+
+
 	while((tk = strtok_r(FilePath, delim, &FilePath))){
 		requested_file = tk;
 	}
@@ -50,14 +51,18 @@ void *threadFunction(void * arg) {
 		while((tk = strtok_r(requested_file, delim, &requested_file))){
 			filetype = tk;
 		}
-		printf("The file type is %s\n", filetype);
-		char fileName[128];
+
+		char fileName[512];
 		getcwd(fileName, sizeof(fileName));
-		strcat(fileName,request[1]);
-		printf("%s\n",fileName);
+		strcat(fileName,finalpath);
+		printf("this is the filename %s \n", fileName);
+		//printf("The file type is %s\n", filetype);
+	if(strcmp(filetype,"jpg") == 0 || strcmp(filetype,"png") == 0){
 		FILE *reqData = fopen(fileName, "r");
 		if(reqData == NULL){
 			perror("File was not opened");
+			char httpHeaderNotFound[8000]="HTTP/1.0 404 Not Found\r\n\r\n";
+			send(tArg->clientfd,httpHeaderNotFound,strlen(httpHeaderNotFound),0);
 			free(tArg);
 			return NULL;
 		}
@@ -75,7 +80,19 @@ void *threadFunction(void * arg) {
 			int read_size = fread(imgData, 1, sizeof(imgData)-1, reqData);
 			write(tArg->clientfd, imgData, read_size);
 		}
-  }
+	}else if(strcmp(filetype,"css") == 0 || strcmp(filetype,"js") == 0){
+		char line[100];
+		char httptextHeader[8000]=
+			"HTTP/1.0 200 OK\r\n"
+			"Content-Type: text/html\r\n\r\n";
+		FILE *fileData = fopen(fileName, "r");
+		while(fgets(line, 100, fileData) != 0){ // I get a SegFault here for some reason :(
+			strcat(httptextHeader, line);
+		}
+		//printf("The messages sent is %s\n",httptextHeader);
+		send(tArg->clientfd,httptextHeader,strlen(httptextHeader),0);
+	}
+}
 	pthread_mutex_unlock(&reading_lock);
 	close(tArg->clientfd);
 	free(tArg); //freeing struct
