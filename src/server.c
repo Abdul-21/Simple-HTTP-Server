@@ -20,7 +20,7 @@ void *threadFunction(void * arg) {
   if (status < 0){
     perror("Nothing received");
   }
-	//printf("%s\n",buf);
+	// printf("%s\n",buf);
 	char *request[8000];
 	char *token;
 	char *res = buf;
@@ -84,12 +84,11 @@ void *threadFunction(void * arg) {
 		char line[100];
 		char httptextHeader[8000]=
 			"HTTP/1.0 200 OK\r\n"
-			"Content-Type: text/html\r\n\r\n";
+			"Content-Type: text/html; charset=utf-8\r\n\r\n";
 		FILE *fileData = fopen(fileName, "r");
-		while(fgets(line, 100, fileData) != 0){ // I get a SegFault here for some reason :(
+		while(fgets(line, 100, fileData) != 0){
 			strcat(httptextHeader, line);
 		}
-		//printf("The messages sent is %s\n",httptextHeader);
 		send(tArg->clientfd,httptextHeader,strlen(httptextHeader),0);
 	}
 }
@@ -128,28 +127,28 @@ void populateFromConfig(FILE *configFp){
 }
 
 //Function to log errors and access
-// void file_logging(){
-//   int alog = open("../logs/access.log", O_RDWR|O_CREAT|O_APPEND, 0600);
-//   if (alog == -1){
-//     perror("Error when opening access log file");
-//     exit(0);
-//   }
-//   int stdout_fd= dup(fileno(stdout));
-//   if (dup2(alog, fileno(stdout)) == -1){
-//       perror("Stdout could not be redirected to log file");
-//       exit(0);
-//   }
-//   int elog = open("../logs/error.log", O_RDWR|O_CREAT|O_APPEND, 0600);
-//   if (elog == -1) {
-//     perror("Error when opening error log file");
-//     exit(0);
-//   }
-//   int stderr_fd= dup(fileno(stderr));
-//   if (dup2(elog, fileno(stderr)) == -1){
-//     perror("Stderr could not be redirected to log file");
-//     exit(0);
-// 	}
-// }
+void file_logging(){
+  int alog = open("../logs/access.log", O_RDWR|O_CREAT|O_APPEND, 0600);
+  if (alog == -1){
+    perror("Error when opening access log file");
+    exit(0);
+  }
+	dup(fileno(stdout));
+  if (dup2(alog, fileno(stdout)) == -1){
+      perror("Stdout could not be redirected to log file");
+      exit(0);
+  }
+  int elog = open("../logs/error.log", O_RDWR|O_CREAT|O_APPEND, 0600);
+  if (elog == -1) {
+    perror("Error when opening error log file");
+    exit(0);
+  }
+  dup(fileno(stderr));
+  if (dup2(elog, fileno(stderr)) == -1){
+    perror("Stderr could not be redirected to log file");
+    exit(0);
+	}
+}
 
 //Function to get the full directory of a graphic or html file
 char *getFullDirectory(char fileName[], int isInImageFolder){
